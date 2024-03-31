@@ -6,8 +6,6 @@
 <h6>Table produit </h6>
 <img src="img/cap1.png">
 
-<h6>Table produit </h6>
-<img src="img/cap1.png">
 
 <h6>Interface </h6>
 <img src="img/cap2.png">
