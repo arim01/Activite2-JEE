@@ -1,14 +1,19 @@
 package ma.emsi.studentapp;
 
+import com.thoughtworks.xstream.XStream;
 import jakarta.persistence.EntityManager;
-import ma.emsi.studentapp.entities.Product;
-import ma.emsi.studentapp.repos.ProductRepos;
+import ma.emsi.studentapp.Service.HospitalServices;
+import ma.emsi.studentapp.entities.*;
+import ma.emsi.studentapp.repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 //Application spring boot
 @SpringBootApplication
@@ -23,6 +28,7 @@ public class StudentAppApplication implements CommandLineRunner {
         //pour ajouter des donnees dns la table produits, on a besoin de spring data
 
     }
+
 
     @Override
     public void run(String... args) throws Exception
@@ -73,5 +79,58 @@ public class StudentAppApplication implements CommandLineRunner {
 
     }
 
+    //Gestion Hopital :
+    @Bean // methode qui s'execute au demarrage et retourne un objet qui deveient un compposant spring
+    CommandLineRunner start(PatientRepos patient,
+                            MedecinRepos med,
+                            RdvRepos rd,
+                            ConsultationRepos cr,HospitalServices hr) // Spring fait l'injection des dependances
+    {
+        return args ->
+        {
+            Stream.of("Arij","Hiba","Imad").forEach(name->{
+                        hr.ajoutPatient(new Patient(null,name, new Date(),false,null));
+                    }
+
+            );
+
+            //Medecin
+            Stream.of("Ali","Sara","Yasmin").forEach(name->{
+                        Medecin medecin= new Medecin();
+                        medecin.setNom(name);
+                        medecin.setSpecialite(Math.random()>0.5?"Cardio":"Generaliste");
+                        medecin.setEmail(name+"@gmail.com");
+                        hr.ajoutMed(medecin);
+
+                    }
+
+            );
+
+            //Recherche
+            Patient p=patient.findById(1L).orElse(null);
+            Patient p2=patient.findByNom("Hiba");
+
+            Medecin m=med.findByNom("Ali");
+
+            //RDV
+            RendezVous rdv= new RendezVous();
+            rdv.setDate(new Date());
+            rdv.setStatus(statusRDV.Pending);
+            rdv.setPatient(p2);
+            rdv.setMedecin(m);
+            RendezVous savedRD =hr.ajoutRdv(rdv);
+            System.out.println("Rendez vous enregistré est : "+savedRD.getId());
+
+
+            //Consultation
+            Consultation c= new Consultation();
+            c.setDateConsultation((rd.findById(1L).orElse(null).getDate()));
+            c.setRdv(rdv);
+            c.setRapport("Rapport de Consultation");
+            hr.ajoutConsultation(c);
+
+
+        };
+    }
 
 }

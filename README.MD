@@ -28,3 +28,14 @@
 
 <hr>
 <h5>Partie 2 :</h5>
+<img src="img/h2p2.png">
+
+<img src="img/P20.png">
+<img src="img/P201.png">
+
+<img src="img/P24.png">
+<img src="img/p21.png">
+<img src="img/p22.png">
+
+<img src="img/P25.png">
+<img src="img/p23.png">
